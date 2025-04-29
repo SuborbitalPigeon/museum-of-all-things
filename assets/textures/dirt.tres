@@ -1,11 +1,16 @@
-[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://dhxahpk8guw31"]
+[gd_resource type="ORMMaterial3D" load_steps=5 format=3 uid="uid://dhxahpk8guw31"]
 
 [ext_resource type="Texture2D" uid="uid://cryumg1318fxi" path="res://assets/textures/Ground048_1K-PNG_Color.png" id="1_wuhu8"]
 [ext_resource type="Texture2D" uid="uid://dfmy40for1b81" path="res://assets/textures/Ground048_1K-PNG_NormalGL.png" id="2_4bs2c"]
+[ext_resource type="Texture2D" uid="uid://dk834vyyuk0uf" path="res://assets/textures/Ground048_1K-PNG_Displacement.png" id="2_scwrq"]
+[ext_resource type="Texture2D" uid="uid://byd55juhpqa0l" path="res://assets/textures/Ground048_1K-PNG_ORM.webp" id="3_8xeqa"]
 
 [resource]
 albedo_texture = ExtResource("1_wuhu8")
+orm_texture = ExtResource("3_8xeqa")
 normal_enabled = true
 normal_scale = 16.0
 normal_texture = ExtResource("2_4bs2c")
+heightmap_enabled = true
+heightmap_texture = ExtResource("2_scwrq")
 uv1_triplanar = true

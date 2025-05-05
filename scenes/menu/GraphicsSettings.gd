@@ -16,11 +16,21 @@ func _ready() -> void:
     _vbox.get_node("DisplayOptions").visible = false
     _vbox.get_node("PostProcessingOptions").visible = false
 
-  if _vbox.get_node("DisplayOptions/ScaleMode").selected == 0:
+  var scale_mode = _vbox.get_node("DisplayOptions/ScaleMode")
+  if scale_mode.selected == 0:
     get_tree().set_group("fsr_options", "visible", false)
   else:
     _vbox.get_node("DisplayOptions/RenderScale").hide()
     _set_up_fsr_quality_menu()
+
+  scale_mode.set_item_tooltip(1,
+      "AMD FidelityFX Super Resolution 1 is a cutting edge super-optimized spatial upscaling " \
+      + "technology that produces impressive image quality at fast framerates."
+  )
+  scale_mode.set_item_tooltip(2,
+      "AMD FidelityFX Super Resolution 2 is a cutting-edge temporal upscaling algorithm that " \
+      + "produces high resolution frames from lower resolution inputs."
+  )
 
 func ui_cancel_pressed():
   if visible:
@@ -129,6 +139,40 @@ func _set_up_fsr_quality_menu() -> void:
 
   if scale_mode == 2:  # FSR 2
     quality_button.add_item("Ultra performance", 4)
+
+  if scale_mode == 1:
+    quality_button.set_item_tooltip(0,
+        "Ultra Quality mode produces an image with quality virtually indistinguishable from " \
+        + "native rendering. It should be selected when the highest quality is desired."
+    )
+    quality_button.set_item_tooltip(1,
+        "Quality mode produces a super resolution image with quality representative of native " \
+        + "rendering, with a sizeable performance gain."
+    )
+    quality_button.set_item_tooltip(2,
+        "Balanced mode produces a super resolution image approximating native rendering quality," \
+        + "with a major performance gain compared to native."
+    )
+    quality_button.set_item_tooltip(3,
+        "Performance mode visibly impacts image quality and should only be selected in " \
+        + "situations where needing additional performance is critical."
+    )
+  if scale_mode == 2:
+    quality_button.set_item_tooltip(0,
+        "Quality mode provides an image quality equal or superior to native rendering with a " \
+        + "significant performance gain."
+    )
+    quality_button.set_item_tooltip(1,
+        "Balanced mode offers an ideal compromise between image quality and performance gains."
+    )
+    quality_button.set_item_tooltip(2,
+        "Performance mode provides an image quality similar to native rendering with a major " \
+        + "performance gain."
+    )
+    quality_button.set_item_tooltip(3,
+        "Ultra Performance mode provides the highest performance gain while still maintaining " \
+        + "an image quality representative of native rendering."
+    )
 
 func _on_scale_mode_value_changed(value: int):
   if value > 0:

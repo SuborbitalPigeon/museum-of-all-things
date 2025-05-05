@@ -20,6 +20,7 @@ func _ready() -> void:
     get_tree().set_group("fsr_options", "visible", false)
   else:
     _vbox.get_node("DisplayOptions/RenderScale").hide()
+    _set_up_fsr_quality_menu()
 
 func ui_cancel_pressed():
   if visible:
@@ -104,37 +105,39 @@ func _update_scaling():
 
   if scale_mode == 0:  # Bilinear
     GraphicsManager.set_render_scale(_vbox.get_node("DisplayOptions/RenderScale").value)
-    return
-
-  # FSR
-  var fsr_quality = _vbox.get_node("DisplayOptions/FSRQuality")
-  if scale_mode == 1:  # FSR 1 has no "ultra performance"
-    fsr_quality.set_item_disabled(0, false)
-    fsr_quality.set_item_disabled(4, true)
-  if scale_mode == 2:  # FSR 2 has no "ultra quality"
-    fsr_quality.set_item_disabled(0, true)
-    fsr_quality.set_item_disabled(4, false)
-
-  GraphicsManager.set_fsr_quality(fsr_quality.selected)
-
-  var scale = get_viewport().scaling_3d_scale
-  _vbox.get_node("DisplayOptions/RenderScale").value = scale
-  _vbox.get_node("DisplayOptions/RenderScaleValue").text = "%.0f %%\n" % (scale * 100)
+  else:  # FSR
+    GraphicsManager.set_fsr_quality(_vbox.get_node("DisplayOptions/FSRQuality").get_selected_id())
+    var scale = get_viewport().scaling_3d_scale
+    _vbox.get_node("DisplayOptions/RenderScale").value = scale
+    _vbox.get_node("DisplayOptions/RenderScaleValue").text = "%.0f %%\n" % (scale * 100)
 
 func _on_render_scale_value_changed(value: float):
   _vbox.get_node("DisplayOptions/RenderScaleValue").text = "%d %%\n" % (value * 100)
   _update_scaling()
 
+func _set_up_fsr_quality_menu() -> void:
+  var scale_mode = _vbox.get_node("DisplayOptions/ScaleMode").selected
+  var quality_button = _vbox.get_node("DisplayOptions/FSRQuality")
+  quality_button.clear()
+
+  if scale_mode == 1:
+    quality_button.add_item("Ultra quality", 0)
+
+  quality_button.add_item("Quality", 1)
+  quality_button.add_item("Balanced", 2)
+  quality_button.add_item("Performance", 3)
+
+  if scale_mode == 2:  # FSR 2
+    quality_button.add_item("Ultra performance", 4)
+
 func _on_scale_mode_value_changed(value: int):
-  match value:
-    1:
-      _vbox.get_node("DisplayOptions/FSRQuality").select(0)
-    2:
-      _vbox.get_node("DisplayOptions/FSRQuality").select(1)
+  if value > 0:
+    _set_up_fsr_quality_menu()
+    _vbox.get_node("DisplayOptions/FSRQuality").select(0)
 
   _update_scaling()
 
-func _on_fsr_quality_item_selected(index: int) -> void:
+func _on_fsr_quality_item_selected(_index: int) -> void:
   _update_scaling()
 
 func _on_sharpness_scale_value_changed(value: float) -> void:

@@ -59,11 +59,12 @@ popup/item_2/id = 2
 layout_mode = 2
 text = "FSR quality mode"
 
-[node name="FSRQuality" type="OptionButton" parent="DisplayOptions" groups=["fsr_options"]]
+[node name="FSR1Quality" type="OptionButton" parent="DisplayOptions"]
+visible = false
 layout_mode = 2
 selected = 0
-item_count = 5
-popup/item_0/text = "Ultra quality"
+item_count = 4
+popup/item_0/text = "Ultra Quality"
 popup/item_0/id = 0
 popup/item_1/text = "Quality"
 popup/item_1/id = 1
@@ -71,8 +72,20 @@ popup/item_2/text = "Balanced"
 popup/item_2/id = 2
 popup/item_3/text = "Performance"
 popup/item_3/id = 3
-popup/item_4/text = "Ultra performance"
-popup/item_4/id = 4
+
+[node name="FSR2Quality" type="OptionButton" parent="DisplayOptions"]
+visible = false
+layout_mode = 2
+selected = 0
+item_count = 4
+popup/item_0/text = "Quality"
+popup/item_0/id = 1
+popup/item_1/text = "Balanced"
+popup/item_1/id = 2
+popup/item_2/text = "Performance"
+popup/item_2/id = 3
+popup/item_3/text = "Ultra Performance"
+popup/item_3/id = 4
 
 [node name="Label3" type="Label" parent="DisplayOptions" groups=["fsr_options"]]
 layout_mode = 2
@@ -266,7 +279,8 @@ popup/item_1/id = 1
 [connection signal="pressed" from="MainOptions/Back" to="." method="_on_resume_pressed"]
 [connection signal="pressed" from="MainOptions/Restore" to="." method="_on_restore_pressed"]
 [connection signal="item_selected" from="DisplayOptions/ScaleMode" to="." method="_on_scale_mode_value_changed"]
-[connection signal="item_selected" from="DisplayOptions/FSRQuality" to="." method="_on_fsr_quality_item_selected"]
+[connection signal="item_selected" from="DisplayOptions/FSR1Quality" to="." method="_on_fsr_quality_item_selected"]
+[connection signal="item_selected" from="DisplayOptions/FSR2Quality" to="." method="_on_fsr_quality_item_selected"]
 [connection signal="value_changed" from="DisplayOptions/SharpnessScale" to="." method="_on_sharpness_scale_value_changed"]
 [connection signal="value_changed" from="DisplayOptions/RenderScale" to="." method="_on_render_scale_value_changed"]
 [connection signal="toggled" from="DisplayOptions/Fullscreen" to="." method="_on_fullscreen_toggled"]

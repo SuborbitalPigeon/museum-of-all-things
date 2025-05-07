@@ -42,7 +42,6 @@ func _load_settings():
   _vbox.get_node("DisplayOptions/Fullscreen").button_pressed = GraphicsManager.fullscreen
   _vbox.get_node("DisplayOptions/RenderScale").value = GraphicsManager.render_scale
   _vbox.get_node("DisplayOptions/ScaleMode").selected = GraphicsManager.scale_mode
-  _vbox.get_node("DisplayOptions/FSRQuality").selected = GraphicsManager.fsr_quality
   _vbox.get_node("DisplayOptions/SharpnessScale").value = GraphicsManager.fsr_sharpness
   _vbox.get_node("ReflectionOptions/ReflectionQuality").value = e.ssr_max_steps
   _vbox.get_node("ReflectionOptions/EnableReflections").button_pressed = e.ssr_enabled
@@ -52,6 +51,11 @@ func _load_settings():
   var post_processing = GraphicsManager.post_processing
   var idx = post_processing_options.find(post_processing)
   _vbox.get_node("PostProcessingOptions/PostProcessingEffect").select(idx if idx >= 0 else 0)
+
+  if GraphicsManager.scale_mode == 1:
+    _vbox.get_node("DisplayOptions/FSR1Quality").selected = GraphicsManager.fsr_quality
+  elif GraphicsManager.scale_mode == 2:
+    _vbox.get_node("DisplayOptions/FSR2Quality").selected = GraphicsManager.fsr_quality
 
   _update_scaling()
 
@@ -101,21 +105,18 @@ func _update_scaling():
   # Show render scale if bilinear, FSR options otherwise
   _vbox.get_node("DisplayOptions/RenderScale").visible = (scale_mode == 0)
   get_tree().set_group("fsr_options", "visible", (scale_mode != 0))
+  _vbox.get_node("DisplayOptions/FSR1Quality").visible = (scale_mode == 1)
+  _vbox.get_node("DisplayOptions/FSR2Quality").visible = (scale_mode == 2)
 
   if scale_mode == 0:  # Bilinear
     GraphicsManager.set_render_scale(_vbox.get_node("DisplayOptions/RenderScale").value)
     return
-
-  # FSR
-  var fsr_quality = _vbox.get_node("DisplayOptions/FSRQuality")
-  if scale_mode == 1:  # FSR 1 has no "ultra performance"
-    fsr_quality.set_item_disabled(0, false)
-    fsr_quality.set_item_disabled(4, true)
-  if scale_mode == 2:  # FSR 2 has no "ultra quality"
-    fsr_quality.set_item_disabled(0, true)
-    fsr_quality.set_item_disabled(4, false)
-
-  GraphicsManager.set_fsr_quality(fsr_quality.selected)
+  elif scale_mode == 1:  # FSR 1
+    GraphicsManager.set_fsr_quality(_vbox.get_node("DisplayOptions/FSR1Quality").get_selected_id())
+  elif scale_mode == 2:  # FSR 2
+    GraphicsManager.set_fsr_quality(_vbox.get_node("DisplayOptions/FSR2Quality").get_selected_id())
+  else:
+    push_error("Invalid scale mode")
 
   var scale = get_viewport().scaling_3d_scale
   _vbox.get_node("DisplayOptions/RenderScale").value = scale
@@ -126,15 +127,14 @@ func _on_render_scale_value_changed(value: float):
   _update_scaling()
 
 func _on_scale_mode_value_changed(value: int):
-  match value:
-    1:
-      _vbox.get_node("DisplayOptions/FSRQuality").select(0)
-    2:
-      _vbox.get_node("DisplayOptions/FSRQuality").select(1)
+  if value == 1:
+     _vbox.get_node("DisplayOptions/FSR1Quality").select(0)
+  elif value == 2:
+    _vbox.get_node("DisplayOptions/FSR2Quality").select(0)
 
   _update_scaling()
 
-func _on_fsr_quality_item_selected(index: int) -> void:
+func _on_fsr_quality_item_selected(_index: int) -> void:
   _update_scaling()
 
 func _on_sharpness_scale_value_changed(value: float) -> void:

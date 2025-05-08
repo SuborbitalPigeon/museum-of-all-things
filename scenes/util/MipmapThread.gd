@@ -47,6 +47,7 @@ func _mipmap_process_item():
       _create_and_emit_texture(image, item.callback)
 
     "create_and_emit_texture":
+      item.image.compress(Image.COMPRESS_S3TC, Image.COMPRESS_SOURCE_SRGB)
       var texture = ImageTexture.create_from_image(item.image)
       item.callback.call_deferred(texture)
 

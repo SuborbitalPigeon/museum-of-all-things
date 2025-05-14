@@ -112,6 +112,8 @@ func _texture_load_item():
       _create_and_emit_texture(item.url, image, item.ctx)
 
     "create_and_emit_texture":
+      if OS.has_feature("s3tc"):
+        item.image.compress(Image.COMPRESS_S3TC, Image.COMPRESS_SOURCE_SRGB)
       var texture = ImageTexture.create_from_image(item.image)
       _emit_image(item.url, texture, item.ctx)
 
